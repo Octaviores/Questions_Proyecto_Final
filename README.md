@@ -23,7 +23,7 @@ Una vez que se recibe una respuesta, el estado de la pregunta se actualiza a `VA
 
 ## Arquitectura
 
-El servicio está estructurado siguiendo los principios de la **Arquitectura Limpia (Clean Architecture)**, con capas separadas para la lógica de aplicación, los modelos de dominio y las implementaciones de infraestructura.
+El servicio está diseñado siguiendo los principios de **Domain Driven Design (DDD)**, organizando el código en capas que separan claramente el dominio, la lógica de aplicación, la infraestructura y la interfaz web.
 
 *   **`web`**: contiene el controlador REST (`QuestionController`) que expone los endpoints de la API.  
 *   **`application`**: aloja la lógica central de negocio (`QuestionService`), orquestando la creación y validación de preguntas.  
