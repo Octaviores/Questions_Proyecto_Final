@@ -1,7 +1,5 @@
 # Microservicio de Preguntas
 
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/Octaviores/Questions_Proyecto_Final)
-
 Este repositorio contiene el código fuente del microservicio **“Questions”**, un componente de una plataforma de comercio electrónico más amplia.  
 Este servicio es responsable de **gestionar las preguntas enviadas por los usuarios sobre los productos**.  
 Está desarrollado en **Java** utilizando el framework **Spring Boot**.
