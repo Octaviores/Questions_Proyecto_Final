@@ -287,20 +287,36 @@ GET /questions/article/{articleId}
 /questions/article/690a144980f77c667b1aab85?contestada=false&orden=desc
 ```
 
-**Response**
+**Ejemplo completo de request/response:**
+
+**Request:**
+```
+GET /questions/article/690a144980f77c667b1aab85?contestada=false&orden=desc
+```
+
+**Response:**
 
 `200 OK`
 ```json
 [
   {
-    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "titulo": "Consulta sobre garantía",
-    "pregunta": "¿Este producto tiene garantía?",
+    "id": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
+    "titulo": "¿Viene con cable?",
+    "pregunta": "¿Este producto incluye cable USB?",
     "articuloId": "690a144980f77c667b1aab85",
     "userId": "f1e2d3c4-b5a6-7890-1234-567890abcdef",
-    "respuesta": "Sí, tiene 12 meses de garantía",
-    "respuestaUserId": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
-    "fechaCreado": "2025-11-08T10:30:00.000Z",
+    "respuesta": null,
+    "fechaCreado": "2025-11-08T15:45:00.000Z",
+    "validationStatus": "VALID"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "titulo": "Duda sobre envío",
+    "pregunta": "¿Hacen envíos internacionales?",
+    "articuloId": "690a144980f77c667b1aab85",
+    "userId": "f1e2d3c4-b5a6-7890-1234-567890abcdef",
+    "respuesta": null,
+    "fechaCreado": "2025-11-08T11:00:00.000Z",
     "validationStatus": "VALID"
   }
 ]
@@ -329,13 +345,26 @@ Content-Type: application/json
 }
 ```
 
-**Response**
+**Ejemplo completo de request/response:**
+
+**Request:**
+```
+POST /questions/a1b2c3d4-e5f6-7890-abcd-ef1234567890/answer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Content-Type: application/json
+
+{
+  "respuesta": "Sí, este producto cuenta con garantía de fábrica de 12 meses contra defectos de fabricación."
+}
+```
+
+**Response:**
 
 `200 OK`
 ```json
 {
   "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "respuesta": "Sí, este producto cuenta con garantía de fábrica de 12 meses.",
+  "respuesta": "Sí, este producto cuenta con garantía de fábrica de 12 meses contra defectos de fabricación.",
   "fechaRespuesta": "2025-11-08T12:00:00.000Z",
   "message": "Pregunta respondida exitosamente"
 }
@@ -362,7 +391,15 @@ POST /questions/{id}
 Authorization: Bearer <token-admin>
 ```
 
-**Response**
+**Ejemplo completo de request/response:**
+
+**Request:**
+```
+POST /questions/b2c3d4e5-f6a7-8901-bcde-f23456789012
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response:**
 
 `200 OK`
 ```json
@@ -388,7 +425,15 @@ GET /questions/answered
 Authorization: Bearer <token-admin>
 ```
 
-**Response**
+**Ejemplo completo de request/response:**
+
+**Request:**
+```
+GET /questions/answered
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response:**
 
 `200 OK`
 ```json
@@ -420,7 +465,15 @@ GET /questions/unanswered
 Authorization: Bearer <token-admin>
 ```
 
-**Response**
+**Ejemplo completo de request/response:**
+
+**Request:**
+```
+GET /questions/unanswered
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response:**
 
 `200 OK`
 ```json
@@ -490,9 +543,7 @@ si el usuario no es admin
   "message": {
     "articleId": "690a144980f77c667b1aab85",
     "referenceId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "valid": true,
-    "price": 10.0,
-    "stock": 10
+    "valid": true
   }
 }
 ```
@@ -501,8 +552,8 @@ si el usuario no es admin
 - `message.articleId`: ID del artículo validado
 - `message.referenceId`: ID de la pregunta (UUID, mismo que se envió en la solicitud)
 - `message.valid`: `true` si el artículo existe y está habilitado, `false` si no
-- `message.price`: Precio del artículo (opcional, informativo)
-- `message.stock`: Stock disponible (opcional, informativo)
+
+**Nota:** Catalog puede incluir opcionalmente campos adicionales como `price` y `stock` con fines informativos, pero Questions solo utiliza los campos `articleId`, `referenceId` y `valid` para actualizar el estado de la pregunta.
 
 ---
 
