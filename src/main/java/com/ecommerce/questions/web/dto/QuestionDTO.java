@@ -1,6 +1,6 @@
 package com.ecommerce.questions.web.dto;
 
-/** DTO para obtener los datos de la pregunta del Postman y crearla en la base de dato */
+/** DTO para obtener los datos de la pregunta del Postman y crearla en la base de datos */
 
 //Lombok
 import lombok.Getter;
@@ -12,4 +12,5 @@ public class QuestionDTO {
     private String titulo;
     private String pregunta;
     private String articuloId;
+    private String userId;
 }

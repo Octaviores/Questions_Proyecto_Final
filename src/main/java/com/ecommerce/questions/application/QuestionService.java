@@ -14,6 +14,10 @@ import com.ecommerce.questions.infrastructure.messaging.producer.ArticleValidati
 //Spring
 import org.springframework.stereotype.Service;
 
+//Extras
+import java.time.Instant;
+import java.util.List;
+
 @Service
 public class QuestionService {
 
@@ -28,8 +32,8 @@ public class QuestionService {
     }
 
     //Metodo para crear una pregunta
-    public Question createQuestion(String articuloId, String titulo, String pregunta) {
-        Question question = new Question(articuloId, titulo, pregunta);
+    public Question createQuestion(String articuloId, String titulo, String pregunta, String userId) {
+        Question question = new Question(articuloId, titulo, pregunta, userId);
         question = questionRepository.save(question);
 
         validationProducer.sendArticleValidationRequest(articuloId, question.getId());
@@ -56,9 +60,65 @@ public class QuestionService {
         }
 
         questionRepository.save(question);
-
-
     }
 
+
+    // Nuevo. Responde una pregunta (solo admin)
+    public Question answerQuestion(String questionId, String respuesta, String adminUserId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException("Pregunta no encontrada: " + questionId));
+
+        if (question.getValidationStatus() != ValidationStatus.VALID) {
+            throw new RuntimeException("Solo se pueden responder preguntas válidas");
+        }
+
+        question.setRespuesta(respuesta);
+        question.setRespuestaUserId(adminUserId);
+        question.setFechaRespuesta(Instant.now());
+
+        return questionRepository.save(question);
+    }
+
+
+    // Nuevo. Elimina una pregunta (marca como DELETED)
+    public void deleteQuestion(String questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException("Pregunta no encontrada: " + questionId));
+
+        question.setValidationStatus(ValidationStatus.DELETED);
+        questionRepository.save(question);
+    }
+
+
+    // Nuevo. Lista preguntas por artículo con filtros opcionales
+    public List<Question> listQuestions(String articuloId, Boolean contestada, String orden) {
+        ValidationStatus status = ValidationStatus.VALID;
+
+        if (contestada == null) {
+            // Solo contestadas, filtradas por articleId y ordenadas por fecha asc o desc
+            if ("asc".equalsIgnoreCase(orden)) {
+                return questionRepository.findByArticuloIdAndValidationStatusOrderByFechaCreadoDesc(articuloId, status);
+            } else {
+                return questionRepository.findByArticuloIdAndValidationStatusOrderByFechaCreadoAsc(articuloId, status);
+            }
+        } else if (contestada) {
+            // Solo contestadas
+            return questionRepository.findAnsweredByArticleId(articuloId);
+        } else {
+            // Solo sin contestar
+            return questionRepository.findUnansweredByArticleId(articuloId);
+        }
+    }
+
+    // Nuevo. Lista todas las preguntas contestadas
+    public List<Question> listAllAnswered() {
+        return questionRepository.findAllAnswered();
+    }
+
+    // Nuevo. Lista todas las preguntas sin contestar
+    public List<Question> listAllUnanswered() {
+        return questionRepository.findAllUnanswered();
+    }
 }
+
 

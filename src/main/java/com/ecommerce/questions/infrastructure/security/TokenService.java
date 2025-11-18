@@ -25,7 +25,7 @@ public class TokenService {
 
     //Metodo para validar usuario
     public void validateLoggedIn(String token) {
-
+        System.out.println("token de validate: " + token);
         //Por si no ingresa nada
         if (token == null || token.isBlank()) {
             throw new UnauthorizedError("Token no proporcionado");
@@ -49,8 +49,34 @@ public class TokenService {
         System.out.println("Token validado y cacheado: " + user.getName());
     }
 
+    // Nuevo. Obtener usuario por un token
+    public User getUserFromToken(String token) {
+        System.out.println("token de getUser: " + token);
+        if (token == null || token.isBlank()) {
+            throw new UnauthorizedError("Token no proporcionado");
+        }
 
-    //Metodo para validar si un usuario es admin, pero dudo que lo use. Lo dejo por las dudas
+        //Buscar en cache
+        User cachedUser = tokenCache.get(token);
+        if (cachedUser != null) {
+            System.out.println("Token encontrado en cache: " + cachedUser.getName());
+            return cachedUser;
+        }
+
+        //Si no está en cache, validar con Auth
+        User user = tokenDao.retrieveUser(token);
+        if (user == null) {
+            throw new UnauthorizedError("Token inválido");
+        }
+        //Cachear el token
+        tokenCache.put(token, user);
+        System.out.println("Token validado y cacheado: " + user.getName());
+        return user;
+    }
+
+
+
+    //Metodo para validar si un usuario es admin
     public void validateAdmin(String token) {
 
         //Validar que esté logueado

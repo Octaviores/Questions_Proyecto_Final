@@ -24,7 +24,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {ValidateLoggedIn.Validator.class})
 public @interface ValidateLoggedIn {
+    String message() default "User must be logged in";  // obligatorio
 
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
     //Clase interna que implementa la lógica de validación.
     //Usa TokenService para comprobar si el token recibido es válido.
     @Component
